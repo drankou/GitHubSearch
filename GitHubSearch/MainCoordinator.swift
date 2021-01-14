@@ -16,7 +16,14 @@ class MainCoordinator: Coordinator {
     }
     
     func start() {
-        let vc = SearchViewController()
-        navigationController.pushViewController(vc, animated: true)
+        let searchVC = SearchViewController()
+        searchVC.coordinator = self
+        navigationController.pushViewController(searchVC, animated: true)
+    }
+    
+    func searchForUser(_ name: String) {
+        let resultsVC = SearchResultsViewController()
+        resultsVC.coordinator = self
+        navigationController.pushViewController(resultsVC, animated: true)
     }
 }

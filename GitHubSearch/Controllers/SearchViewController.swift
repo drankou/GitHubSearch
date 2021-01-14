@@ -9,10 +9,15 @@ import UIKit
 
 class SearchViewController: UIViewController {
 
+    weak var coordinator: MainCoordinator?
+    
     override func loadView() {
         super.loadView()
-        view.backgroundColor = .white
-        //custom view..
+        let searchView = SearchView()
+        searchView.searchButton.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
+        searchView.usernameTextField.delegate = self
+        
+        view = searchView
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -22,6 +27,22 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    
+    //MARK: Private methods
+    @objc private func searchButtonTapped() {
+
+    }
+}
+
+
+// MARK: UITextFieldDelegate extension
+extension SearchViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        textField.resignFirstResponder()
+        return true
     }
 }
 
