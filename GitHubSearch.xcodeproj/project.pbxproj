@@ -12,6 +12,11 @@
 		1E81D69925AF5BB700E15E31 /* GSTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D69825AF5BB700E15E31 /* GSTextField.swift */; };
 		1E81D69E25AF5DA100E15E31 /* GSSearchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D69D25AF5DA100E15E31 /* GSSearchButton.swift */; };
 		1E81D6A925AF998400E15E31 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6A825AF998400E15E31 /* SearchResultsViewController.swift */; };
+		1E81D6BB25B0611400E15E31 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6BA25B0611400E15E31 /* User.swift */; };
+		1E81D6C325B0678000E15E31 /* UserCellContentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6C225B0678000E15E31 /* UserCellContentConfiguration.swift */; };
+		1E81D6D625B0A04300E15E31 /* user-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E81D6D425B0A04300E15E31 /* user-default.png */; };
+		1E81D6E425B0B5E100E15E31 /* UIImage+RoundedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6E325B0B5E100E15E31 /* UIImage+RoundedImage.swift */; };
+		1E81D6EF25B0B65B00E15E31 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6EE25B0B65B00E15E31 /* UserDetailViewController.swift */; };
 		1EF379CE25AF37B5005563B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF379CD25AF37B5005563B6 /* AppDelegate.swift */; };
 		1EF379D025AF37B5005563B6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF379CF25AF37B5005563B6 /* SceneDelegate.swift */; };
 		1EF379D225AF37B5005563B6 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF379D125AF37B5005563B6 /* SearchViewController.swift */; };
@@ -46,6 +51,11 @@
 		1E81D69825AF5BB700E15E31 /* GSTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GSTextField.swift; sourceTree = "<group>"; };
 		1E81D69D25AF5DA100E15E31 /* GSSearchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GSSearchButton.swift; sourceTree = "<group>"; };
 		1E81D6A825AF998400E15E31 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
+		1E81D6BA25B0611400E15E31 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		1E81D6C225B0678000E15E31 /* UserCellContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellContentConfiguration.swift; sourceTree = "<group>"; };
+		1E81D6D425B0A04300E15E31 /* user-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user-default.png"; sourceTree = "<group>"; };
+		1E81D6E325B0B5E100E15E31 /* UIImage+RoundedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+RoundedImage.swift"; sourceTree = "<group>"; };
+		1E81D6EE25B0B65B00E15E31 /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		1EF379CA25AF37B5005563B6 /* GitHubSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitHubSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EF379CD25AF37B5005563B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1EF379CF25AF37B5005563B6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -117,6 +127,7 @@
 				1EF37A1D25AF43F9005563B6 /* Extensions */,
 				1EF37A0325AF3DF1005563B6 /* Coordinator.swift */,
 				1EF37A0B25AF4309005563B6 /* MainCoordinator.swift */,
+				1E81D6D425B0A04300E15E31 /* user-default.png */,
 				1E81D69325AF501100E15E31 /* github-logo.png */,
 				1EF379D625AF37B7005563B6 /* Assets.xcassets */,
 				1EF37A1C25AF43A5005563B6 /* Supporting Files */,
@@ -148,6 +159,7 @@
 			children = (
 				1EF379D125AF37B5005563B6 /* SearchViewController.swift */,
 				1E81D6A825AF998400E15E31 /* SearchResultsViewController.swift */,
+				1E81D6EE25B0B65B00E15E31 /* UserDetailViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -158,6 +170,7 @@
 				1E81D68B25AF4F9D00E15E31 /* SearchView.swift */,
 				1E81D69D25AF5DA100E15E31 /* GSSearchButton.swift */,
 				1E81D69825AF5BB700E15E31 /* GSTextField.swift */,
+				1E81D6C225B0678000E15E31 /* UserCellContentConfiguration.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -165,6 +178,7 @@
 		1EF37A1B25AF4382005563B6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1E81D6BA25B0611400E15E31 /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -182,6 +196,7 @@
 		1EF37A1D25AF43F9005563B6 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				1E81D6E325B0B5E100E15E31 /* UIImage+RoundedImage.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -291,6 +306,7 @@
 			files = (
 				1EF379DA25AF37B7005563B6 /* LaunchScreen.storyboard in Resources */,
 				1E81D69425AF501100E15E31 /* github-logo.png in Resources */,
+				1E81D6D625B0A04300E15E31 /* user-default.png in Resources */,
 				1EF379D725AF37B7005563B6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -316,13 +332,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E81D6BB25B0611400E15E31 /* User.swift in Sources */,
 				1EF37A0425AF3DF1005563B6 /* Coordinator.swift in Sources */,
+				1E81D6EF25B0B65B00E15E31 /* UserDetailViewController.swift in Sources */,
 				1EF379D225AF37B5005563B6 /* SearchViewController.swift in Sources */,
 				1EF37A0C25AF4309005563B6 /* MainCoordinator.swift in Sources */,
 				1E81D69E25AF5DA100E15E31 /* GSSearchButton.swift in Sources */,
 				1EF379CE25AF37B5005563B6 /* AppDelegate.swift in Sources */,
 				1E81D68C25AF4F9D00E15E31 /* SearchView.swift in Sources */,
 				1E81D69925AF5BB700E15E31 /* GSTextField.swift in Sources */,
+				1E81D6C325B0678000E15E31 /* UserCellContentConfiguration.swift in Sources */,
+				1E81D6E425B0B5E100E15E31 /* UIImage+RoundedImage.swift in Sources */,
 				1E81D6A925AF998400E15E31 /* SearchResultsViewController.swift in Sources */,
 				1EF379D025AF37B5005563B6 /* SceneDelegate.swift in Sources */,
 			);

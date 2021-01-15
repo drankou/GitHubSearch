@@ -24,6 +24,14 @@ class MainCoordinator: Coordinator {
     func searchForUser(_ name: String) {
         let resultsVC = SearchResultsViewController()
         resultsVC.coordinator = self
+        resultsVC.username = name
         navigationController.pushViewController(resultsVC, animated: true)
+    }
+    
+    func showUserDetails(for user: User) {
+        let userDetailVC = UserDetailViewController()
+        userDetailVC.coordinator = self
+        userDetailVC.user = user
+        navigationController.pushViewController(userDetailVC, animated: true)
     }
 }
