@@ -25,6 +25,7 @@ class GSTextField: UITextField {
         font = .preferredFont(forTextStyle: .title2)
         adjustsFontSizeToFitWidth = true
         minimumFontSize = 20
+        clearButtonMode = .always
     }
 
     required init?(coder: NSCoder) {
