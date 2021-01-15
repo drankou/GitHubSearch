@@ -7,23 +7,17 @@
 
 import UIKit
 
-struct User: Hashable {
-    var id: String
-    var name: String
-    var username: String
-    var email: String
-    var image: UIImage
-    var status: UserStatus
+struct User: Codable, Hashable {
+    var id: Int
+    var login: String
+    var avatarURL: String
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    static func == (lhs: User, rhs: User) -> Bool {
-        lhs.id == rhs.id
+    private enum CodingKeys: String, CodingKey {
+        case id, login
+        case avatarURL = "avatar_url"
     }
 }
 
-enum UserStatus {
-    case focusing
+struct UserSearchResponse: Codable, Hashable {
+    var items: [User]
 }
