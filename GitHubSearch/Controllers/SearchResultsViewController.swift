@@ -31,7 +31,7 @@ class SearchResultsViewController: UIViewController {
     }
     
     func configureCollectionView() {
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: generateLayout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.backgroundColor = .white
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
@@ -65,15 +65,19 @@ class SearchResultsViewController: UIViewController {
         }
     }
     
-    func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 15, left: 25, bottom: 20, right: 15)
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 20
-
-        let width = UIScreen.main.bounds.width / 3 - 30
-        layout.itemSize = CGSize(width: width, height: 140)
+    func createLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.33), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSIze = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(150))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSIze, subitem: item, count: 3)
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(8.0)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 8
+        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+        
+        let layout = UICollectionViewCompositionalLayout(section: section)
         
         return layout
     }
