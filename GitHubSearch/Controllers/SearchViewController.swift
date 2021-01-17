@@ -30,6 +30,7 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.hideKeyboardWhenTappedAround()
         
         usernameTextField.delegate = self
         searchButton.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
@@ -38,10 +39,16 @@ class SearchViewController: UIViewController {
     
     //MARK: Private methods
     @objc private func searchButtonTapped() {
-        if let username = usernameTextField.text, !username.isEmpty {
+        let username = usernameTextField.text ?? ""
+
+        if !username.isEmpty{
             coordinator?.searchForUser(username)
-        } else {
+        } else if username.isEmpty{
             let ac = UIAlertController(title: "Username shouldn't be empty", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(ac, animated: true)
+        } else if username.count > 39 {
+            let ac = UIAlertController(title: "Github username may contain maximum of \(String()) characters", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(ac, animated: true)
         }
@@ -56,5 +63,25 @@ extension SearchViewController: UITextFieldDelegate {
         searchButtonTapped()
         return true
     }
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let username = textField.text ?? ""
+        
+        guard let stringRange = Range(range, in: username) else { return false }
+        let maximumInputText = username.replacingCharacters(in: stringRange, with: string)
+        return maximumInputText.count <= 39
+    }
 }
 
+// MARK: Keyboard dismissing
+extension SearchViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
