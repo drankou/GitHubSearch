@@ -8,12 +8,12 @@
 import UIKit
 
 class UserDetailViewController: UIViewController {
-    var user: User?
+    var user: User!
     weak var coordinator: MainCoordinator?
     
     override func loadView() {
-        view = UIView()
-        view.backgroundColor = .white
+        let userDetail = UserDetailView(user: user)
+        view = userDetail
     }
     
     override func viewDidLoad() {
