@@ -20,7 +20,9 @@ class SearchResultsViewController: UIViewController {
     var dataSource: CollectionDataSource!
     var username: String!
     var activityIndicator: UIActivityIndicatorView!
-
+    
+    private var users = [User]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -65,16 +67,18 @@ class SearchResultsViewController: UIViewController {
 //MARK: UICollectionViewCompositionalLayout configuration
 extension SearchResultsViewController {
     private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        
+        let estimatedHeight = CGFloat(250) //estimated height has to be set to both item and group size for automatic dynamic cell sizing (based on content)
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(estimatedHeight))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSIze = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.2))
+        let groupSIze = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(estimatedHeight))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSIze, subitem: item, count: 3)
         group.interItemSpacing = .fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 8
-        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+        section.interGroupSpacing = 10
+        section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
         
         let layout = UICollectionViewCompositionalLayout(section: section)
         
@@ -85,8 +89,26 @@ extension SearchResultsViewController {
 //MARK: Diffable datasource configuration
 extension SearchResultsViewController {
     private func configureDataSource() {
-        let cellRegistration = UICollectionView.CellRegistration<UserCollectionViewCell, User> { cell, _, user in
-            let content = UserCellContentConfiguration(userLogin: user.login)
+        let cellRegistration = UICollectionView.CellRegistration<UserCollectionViewCell, User> { cell, indexPath, user in
+            var content =  cell.defaultCellConfiguration()
+            content.userLogin = user.login
+            content.userImage = user.avatarImage
+            
+            ImageCache.publicCache.load(url: user.avatarURL! as NSURL, item: user) { [weak self] (fetchedUser, image) in
+                guard let self = self else { return }
+                if let img = image, img != fetchedUser.avatarImage {
+                    var updatedSnapshot = self.dataSource.snapshot()
+                    if let index = updatedSnapshot.indexOfItem(user) {
+                        let user = self.users[index]
+                        user.avatarImage = img
+                        updatedSnapshot.reloadItems([user])
+                        DispatchQueue.main.async {
+                            self.dataSource.apply(updatedSnapshot, animatingDifferences: true)
+                        }
+                    }
+                }
+            }
+            
             cell.contentConfiguration = content
         }
         
@@ -103,26 +125,29 @@ extension SearchResultsViewController {
         
         let dataLoader = DataLoader()
         dataLoader.request(.searchUsers(matching: username)) { [weak self] (result) in
+            guard let self = self else { return }
+            
             switch result {
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self?.activityIndicator.stopAnimating()
+                    self.activityIndicator.stopAnimating()
 
                     let ac = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                     ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self?.present(ac, animated: true)
+                    self.present(ac, animated: true)
                     
-                    self?.showEmptyResultsView()
+                    self.showEmptyResultsView()
                 }
             case .success(let users):
+                self.users = users
                 DispatchQueue.main.async {
-                    self?.activityIndicator.stopAnimating()
+                    self.activityIndicator.stopAnimating()
 
                     if users.count == 0 {
-                        self?.showEmptyResultsView()
+                        self.showEmptyResultsView()
                     } else {
                         snapshot.appendItems(users)
-                        self?.dataSource.apply(snapshot, animatingDifferences: true)
+                        self.dataSource.apply(snapshot, animatingDifferences: true)
                     }
                 }
             }
