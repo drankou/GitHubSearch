@@ -19,7 +19,7 @@ class SearchResultsViewController: UIViewController {
     var collectionView: UICollectionView!
     var dataSource: CollectionDataSource!
     var username: String!
-    var activityIndicator: UIActivityIndicatorView!
+    var activityIndicator = UIActivityIndicatorView()
     
     private var users = [User]()
     
@@ -28,13 +28,15 @@ class SearchResultsViewController: UIViewController {
     
         configureCollectionView()
         configureDataSource()
-        showActivityIndicator()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.title = "Search results for: \(username ?? "")"
     }
     
     func configureCollectionView() {
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        navigationItem.title = "Search results for: \(username ?? "")"
-        
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.backgroundColor = .white
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -43,7 +45,7 @@ class SearchResultsViewController: UIViewController {
     }
     
     func showActivityIndicator() {
-        activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.style = .medium
         activityIndicator.color = .lightGray
         activityIndicator.hidesWhenStopped = true
         
@@ -120,11 +122,13 @@ extension SearchResultsViewController {
     }
     
     private func initialSnapshot() {
+        showActivityIndicator()
+        
         var snapshot = Snapshot()
         snapshot.appendSections([.main])
         
         let dataLoader = DataLoader()
-        dataLoader.request(.searchUsers(matching: username)) { [weak self] (result) in
+        dataLoader.request(.searchUsers(matching: username), of: UserSearchResponse.self) { [weak self] (result) in
             guard let self = self else { return }
             
             switch result {
@@ -138,15 +142,15 @@ extension SearchResultsViewController {
                     
                     self.showEmptyResultsView()
                 }
-            case .success(let users):
-                self.users = users
+            case .success(let response):
+                self.users = response.items
                 DispatchQueue.main.async {
                     self.activityIndicator.stopAnimating()
 
-                    if users.count == 0 {
+                    if self.users.count == 0 {
                         self.showEmptyResultsView()
                     } else {
-                        snapshot.appendItems(users)
+                        snapshot.appendItems(self.users)
                         self.dataSource.apply(snapshot, animatingDifferences: true)
                     }
                 }

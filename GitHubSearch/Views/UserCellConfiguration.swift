@@ -83,6 +83,7 @@ class UserCellContentView: UIView, UIContentView {
         imageContainerView.layer.shadowOpacity = 0.5
         imageContainerView.layer.shadowOffset = CGSize(width: 2, height: 4)
         imageContainerView.layer.cornerRadius = 12
+        imageContainerView.layer.shouldRasterize = true
         
         imageContainerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

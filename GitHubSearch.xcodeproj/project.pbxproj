@@ -10,14 +10,17 @@
 		1E78660525B4762000279898 /* EmptyResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78660425B4762000279898 /* EmptyResultsView.swift */; };
 		1E78660A25B4A16500279898 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78660925B4A16500279898 /* ImageCache.swift */; };
 		1E78661A25B70E6D00279898 /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78661925B70E6D00279898 /* UserDetailView.swift */; };
+		1E78662B25B7837A00279898 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78662A25B7837A00279898 /* Repository.swift */; };
+		1E78663025B9808D00279898 /* InformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78662F25B9808D00279898 /* InformationView.swift */; };
+		1E78663525B9A0A400279898 /* Int+AbbreviationValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78663425B9A0A400279898 /* Int+AbbreviationValue.swift */; };
+		1E78663A25B9A12E00279898 /* NSMutableAttributedString+Append.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78663925B9A12E00279898 /* NSMutableAttributedString+Append.swift */; };
+		1E78663F25B9BEA400279898 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78663E25B9BEA400279898 /* SFSymbols.swift */; };
 		1E81D68C25AF4F9D00E15E31 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D68B25AF4F9D00E15E31 /* SearchView.swift */; };
-		1E81D69425AF501100E15E31 /* github-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E81D69325AF501100E15E31 /* github-logo.png */; };
 		1E81D69925AF5BB700E15E31 /* GSTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D69825AF5BB700E15E31 /* GSTextField.swift */; };
 		1E81D69E25AF5DA100E15E31 /* GSSearchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D69D25AF5DA100E15E31 /* GSSearchButton.swift */; };
 		1E81D6A925AF998400E15E31 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6A825AF998400E15E31 /* SearchResultsViewController.swift */; };
 		1E81D6BB25B0611400E15E31 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6BA25B0611400E15E31 /* User.swift */; };
 		1E81D6C325B0678000E15E31 /* UserCellConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6C225B0678000E15E31 /* UserCellConfiguration.swift */; };
-		1E81D6D625B0A04300E15E31 /* user-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E81D6D425B0A04300E15E31 /* user-default.png */; };
 		1E81D6E425B0B5E100E15E31 /* UIImage+RoundedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6E325B0B5E100E15E31 /* UIImage+RoundedImage.swift */; };
 		1E81D6EF25B0B65B00E15E31 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D6EE25B0B65B00E15E31 /* UserDetailViewController.swift */; };
 		1E81D70125B19B7100E15E31 /* DataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D70025B19B7100E15E31 /* DataLoader.swift */; };
@@ -53,14 +56,17 @@
 		1E78660425B4762000279898 /* EmptyResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyResultsView.swift; sourceTree = "<group>"; };
 		1E78660925B4A16500279898 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		1E78661925B70E6D00279898 /* UserDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
+		1E78662A25B7837A00279898 /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
+		1E78662F25B9808D00279898 /* InformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationView.swift; sourceTree = "<group>"; };
+		1E78663425B9A0A400279898 /* Int+AbbreviationValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+AbbreviationValue.swift"; sourceTree = "<group>"; };
+		1E78663925B9A12E00279898 /* NSMutableAttributedString+Append.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Append.swift"; sourceTree = "<group>"; };
+		1E78663E25B9BEA400279898 /* SFSymbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbols.swift; sourceTree = "<group>"; };
 		1E81D68B25AF4F9D00E15E31 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
-		1E81D69325AF501100E15E31 /* github-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "github-logo.png"; sourceTree = "<group>"; };
 		1E81D69825AF5BB700E15E31 /* GSTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GSTextField.swift; sourceTree = "<group>"; };
 		1E81D69D25AF5DA100E15E31 /* GSSearchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GSSearchButton.swift; sourceTree = "<group>"; };
 		1E81D6A825AF998400E15E31 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		1E81D6BA25B0611400E15E31 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1E81D6C225B0678000E15E31 /* UserCellConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellConfiguration.swift; sourceTree = "<group>"; };
-		1E81D6D425B0A04300E15E31 /* user-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user-default.png"; sourceTree = "<group>"; };
 		1E81D6E325B0B5E100E15E31 /* UIImage+RoundedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+RoundedImage.swift"; sourceTree = "<group>"; };
 		1E81D6EE25B0B65B00E15E31 /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		1E81D70025B19B7100E15E31 /* DataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLoader.swift; sourceTree = "<group>"; };
@@ -133,13 +139,6 @@
 				1EF37A1A25AF437A005563B6 /* Views */,
 				1EF37A1925AF4375005563B6 /* Controllers */,
 				1EF37A1D25AF43F9005563B6 /* Extensions */,
-				1E81D70025B19B7100E15E31 /* DataLoader.swift */,
-				1EF37A0325AF3DF1005563B6 /* Coordinator.swift */,
-				1E78660925B4A16500279898 /* ImageCache.swift */,
-				1EF37A0B25AF4309005563B6 /* MainCoordinator.swift */,
-				1E81D6D425B0A04300E15E31 /* user-default.png */,
-				1E81D69325AF501100E15E31 /* github-logo.png */,
-				1EF379D625AF37B7005563B6 /* Assets.xcassets */,
 				1EF37A1C25AF43A5005563B6 /* Supporting Files */,
 				1EF379DB25AF37B7005563B6 /* Info.plist */,
 			);
@@ -183,6 +182,7 @@
 				1E81D6C225B0678000E15E31 /* UserCellConfiguration.swift */,
 				1E78660425B4762000279898 /* EmptyResultsView.swift */,
 				1E78661925B70E6D00279898 /* UserDetailView.swift */,
+				1E78662F25B9808D00279898 /* InformationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -191,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				1E81D6BA25B0611400E15E31 /* User.swift */,
+				1E78662A25B7837A00279898 /* Repository.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -201,6 +202,12 @@
 				1EF379CD25AF37B5005563B6 /* AppDelegate.swift */,
 				1EF379CF25AF37B5005563B6 /* SceneDelegate.swift */,
 				1EF379D825AF37B7005563B6 /* LaunchScreen.storyboard */,
+				1E81D70025B19B7100E15E31 /* DataLoader.swift */,
+				1E78660925B4A16500279898 /* ImageCache.swift */,
+				1EF37A0325AF3DF1005563B6 /* Coordinator.swift */,
+				1EF37A0B25AF4309005563B6 /* MainCoordinator.swift */,
+				1E78663E25B9BEA400279898 /* SFSymbols.swift */,
+				1EF379D625AF37B7005563B6 /* Assets.xcassets */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -209,6 +216,8 @@
 			isa = PBXGroup;
 			children = (
 				1E81D6E325B0B5E100E15E31 /* UIImage+RoundedImage.swift */,
+				1E78663425B9A0A400279898 /* Int+AbbreviationValue.swift */,
+				1E78663925B9A12E00279898 /* NSMutableAttributedString+Append.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -317,8 +326,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EF379DA25AF37B7005563B6 /* LaunchScreen.storyboard in Resources */,
-				1E81D69425AF501100E15E31 /* github-logo.png in Resources */,
-				1E81D6D625B0A04300E15E31 /* user-default.png in Resources */,
 				1EF379D725AF37B7005563B6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,20 +354,25 @@
 				1E81D6BB25B0611400E15E31 /* User.swift in Sources */,
 				1EF37A0425AF3DF1005563B6 /* Coordinator.swift in Sources */,
 				1E78660A25B4A16500279898 /* ImageCache.swift in Sources */,
+				1E78663525B9A0A400279898 /* Int+AbbreviationValue.swift in Sources */,
 				1E81D6EF25B0B65B00E15E31 /* UserDetailViewController.swift in Sources */,
 				1EF379D225AF37B5005563B6 /* SearchViewController.swift in Sources */,
 				1EF37A0C25AF4309005563B6 /* MainCoordinator.swift in Sources */,
+				1E78663A25B9A12E00279898 /* NSMutableAttributedString+Append.swift in Sources */,
 				1E81D69E25AF5DA100E15E31 /* GSSearchButton.swift in Sources */,
 				1EF379CE25AF37B5005563B6 /* AppDelegate.swift in Sources */,
 				1E81D68C25AF4F9D00E15E31 /* SearchView.swift in Sources */,
 				1E81D69925AF5BB700E15E31 /* GSTextField.swift in Sources */,
 				1E81D6C325B0678000E15E31 /* UserCellConfiguration.swift in Sources */,
 				1E78661A25B70E6D00279898 /* UserDetailView.swift in Sources */,
+				1E78663F25B9BEA400279898 /* SFSymbols.swift in Sources */,
 				1E81D70125B19B7100E15E31 /* DataLoader.swift in Sources */,
 				1E81D6E425B0B5E100E15E31 /* UIImage+RoundedImage.swift in Sources */,
 				1E81D6A925AF998400E15E31 /* SearchResultsViewController.swift in Sources */,
 				1E78660525B4762000279898 /* EmptyResultsView.swift in Sources */,
 				1EF379D025AF37B5005563B6 /* SceneDelegate.swift in Sources */,
+				1E78663025B9808D00279898 /* InformationView.swift in Sources */,
+				1E78662B25B7837A00279898 /* Repository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

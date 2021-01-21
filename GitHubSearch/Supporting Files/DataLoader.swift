@@ -38,11 +38,18 @@ extension Endpoint {
             ]
         )
     }
+    
+    static func userInfo(for login: String) -> Endpoint {
+        return Endpoint(
+            path: "/users/\(login)",
+            queryItems: [URLQueryItem]()
+        )
+    }
 }
 
 
 class DataLoader {
-    func request(_ endpoint: Endpoint, completion: @escaping (Result<[User], EndpointError>) -> Void) {
+    func request<T:Decodable>(_ endpoint: Endpoint, of type: T.Type, completion: @escaping (Result<T, EndpointError>) -> Void) {
         guard let url = endpoint.url else {
             return completion(.failure(.invalidURL))
         }
@@ -54,8 +61,8 @@ class DataLoader {
             
             if let jsonData = data {
                 do {
-                    let userSearchResponse = try JSONDecoder().decode(UserSearchResponse.self, from: jsonData)
-                    completion(.success(userSearchResponse.items))
+                    let response = try JSONDecoder().decode(T.self, from: jsonData)
+                    completion(.success(response))
                 } catch {
                     completion(.failure(.jsonDecoderError(error: error)))
                 }
