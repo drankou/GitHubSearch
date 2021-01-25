@@ -11,6 +11,26 @@ class InformationView: UIView {
     var image: UIImage?
     var label: UILabel
     
+    var text: String? {
+        willSet {
+            if let newValue = newValue, !newValue.isEmpty {
+                label.text = newValue
+            } else {
+                self.isHidden = true
+            }
+        }
+    }
+    
+    var attributedText: NSAttributedString? {
+        willSet {
+            if let newValue = newValue, newValue.length == .zero {
+                label.attributedText = newValue
+            } else {
+                self.isHidden = true
+            }
+        }
+    }
+    
     init(image: UIImage?, label: UILabel) {
         self.image = image
         self.label = label
@@ -18,33 +38,44 @@ class InformationView: UIView {
         configureView()
     }
     
-    private func configureView() {
-        let stackView = UIStackView()
-        addSubview(stackView)
+    lazy var containerStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [iconImageView, label])
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.distribution = .fillProportionally
+        stack.spacing = 5
+        stack.translatesAutoresizingMaskIntoConstraints = false
         
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 5
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            stackView.topAnchor.constraint(equalTo: self.topAnchor),
-            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        ])
+        return stack
+    }()
+    
+    private let iconImageView: UIImageView = {
+        let imageView = UIImageView()
         
-        let imageView = UIImageView(frame: .zero)
-        imageView.image = self.image
         imageView.tintColor = .systemGray
         imageView.contentMode = .scaleAspectFit
-        imageView.setContentHuggingPriority(.required, for: .horizontal)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalToConstant: 20)
         ])
-
-        [imageView, label].forEach { stackView.addArrangedSubview($0) }
+        
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+        imageView.setContentHuggingPriority(.required, for: .vertical)
+        
+        return imageView
+    }()
+    
+    private func configureView() {
+        addSubview(containerStack)
+    
+        NSLayoutConstraint.activate([
+            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            containerStack.topAnchor.constraint(equalTo: self.topAnchor),
+            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+        ])
+        
+        iconImageView.image = self.image
     }
     
     required init?(coder: NSCoder) {

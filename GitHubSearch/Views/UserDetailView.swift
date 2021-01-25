@@ -8,10 +8,13 @@
 import UIKit
 
 class UserDetailView: UIView {
-    var user: User
+    var user: User? {
+        didSet {
+            apply()
+        }
+    }
     
-    init(user: User) {
-        self.user = user
+    init() {
         super.init(frame: .zero)
         configureView()
     }
@@ -20,146 +23,141 @@ class UserDetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func configureView() {
-        let userDetailStackView = UIStackView()
-        addSubview(userDetailStackView)
-
-        userDetailStackView.axis = .vertical
-        userDetailStackView.spacing = 10
-        userDetailStackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            userDetailStackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 15),
-            userDetailStackView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 15),
-            userDetailStackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -15),
-            userDetailStackView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -15),
-        ])
-        
-        [headerView(), bioView(), companyView(), locationView(), blogView(), emailView(), followersFollowingView()].forEach {
-            if let subview = $0 {
-                userDetailStackView.addArrangedSubview(subview)
-            }
-        }
-    }
-    
-    private func headerView() -> UIView {
-        let headerStackView = UIStackView()
-        headerStackView.axis = .horizontal
-        headerStackView.spacing = 16
-        headerStackView.alignment = .center
-        
-        headerStackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            headerStackView.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
-        let userImage = UIImageView()
+    private func apply() {
+        guard let user = user else { return }
         userImage.image = user.avatarImage.roundedImage
-        userImage.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            userImage.widthAnchor.constraint(equalToConstant: 65),
-            userImage.heightAnchor.constraint(equalToConstant: 65)
-        ])
-        
-        [userImage, nameView()].forEach { headerStackView.addArrangedSubview($0)}
-
-        return headerStackView
-    }
-        
-    private func nameView() -> UIView {
-        let namesStackView = UIStackView()
-        namesStackView.axis = .vertical
-        namesStackView.alignment = .leading
-        
-        let nameLabel = UILabel()
-        nameLabel.adjustsFontSizeToFitWidth = true
-        nameLabel.minimumScaleFactor = 0.75
-        let loginLabel = UILabel()
         
         if let name = user.name, !name.isEmpty {
             nameLabel.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
-            nameLabel.text = user.name
-            
             loginLabel.font = UIFont.systemFont(ofSize: 16, weight: .light)
-            loginLabel.text = user.login
-            loginLabel.textColor = .gray
         } else {
-            nameLabel.font = UIFont.systemFont(ofSize: 20, weight: .light)
-            nameLabel.textColor = .gray
-            nameLabel.text = user.login
+            loginLabel.font = UIFont.systemFont(ofSize: 20, weight: .light)
         }
         
-        [nameLabel, loginLabel].forEach { namesStackView.addArrangedSubview($0) }
-
-        return namesStackView
-    }
-    
-    private func bioView() -> UIView? {
-        guard let bio = user.bio, !bio.isEmpty else { return nil}
+        nameLabel.text = user.name
+        loginLabel.text = user.login
+        bioLabel.text = user.bio
+        companyInformationView.text = user.company
+        locationInformationView.text = user.location
+        mailInformatioView.text = user.email
+        blogInformationView.text = user.blog
         
-        let bioLabel = UILabel()
-        bioLabel.text = bio
-        bioLabel.numberOfLines = 0
-        bioLabel.setContentHuggingPriority(.required, for: .horizontal)
-        
-        return bioLabel
-    }
-    
-    private func companyView() ->  UIView? {
-        guard let company = user.company, !company.isEmpty else { return nil }
-        
-        let companyLabel = UILabel()
-        companyLabel.text = company
-        companyLabel.setContentHuggingPriority(.required, for: .horizontal)
-        companyLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-        companyLabel.font = UIFont.systemFont(ofSize: 14)
-        
-        return InformationView(image: SFSymbols.company, label: companyLabel)
-    }
-    
-    private func locationView() -> UIView? {
-        guard let location = user.location, !location.isEmpty else { return nil }
-        
-        let locationLabel = UILabel()
-        locationLabel.setContentHuggingPriority(.init(249), for: .horizontal)
-        locationLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        locationLabel.text = location
-        locationLabel.font = UIFont.systemFont(ofSize: 14, weight: .light)
-        
-        return InformationView(image: SFSymbols.location, label: locationLabel)
-    }
-    
-    private func emailView() -> UIView? {
-        guard let email = user.email, !email.isEmpty else { return nil }
-        
-        let mailLabel = UILabel()
-        mailLabel.text = email
-        mailLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        
-        return InformationView(image: SFSymbols.mail, label: mailLabel)
-    }
-    
-    private func blogView() -> UIView? {
-        guard let blog = user.blog, !blog.isEmpty else { return nil }
-        
-        let blogLabel = UILabel()
-        blogLabel.text = blog
-        blogLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        
-        return InformationView(image: SFSymbols.link, label: blogLabel)
-    }
-    
-    private func followersFollowingView() -> UIView? {
-        guard user.type == .user else { return nil }
-        let attributedText = NSMutableAttributedString()
+        followersFollowingInformationView.attributedText = NSMutableAttributedString()
             .append("\(user.followers?.abbreviationValue ?? "0")", font: .numbers)
             .append(" followers \u{2022} ", font: .text)
             .append("\(user.following?.abbreviationValue ?? "0")", font: .numbers)
             .append(" following", font: .text)
-        
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.attributedText = attributedText
-        
-        return InformationView(image: SFSymbols.person, label: label)
     }
+    
+    private func configureView() {
+        addSubview(containerStack)
+        NSLayoutConstraint.activate([
+            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            containerStack.topAnchor.constraint(equalTo: self.topAnchor),
+            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+        ])
+    }
+    
+    lazy var containerStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [headerStack, bioLabel, companyInformationView, locationInformationView,
+                                                   mailInformatioView, blogInformationView, followersFollowingInformationView])
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        stack.axis = .vertical
+        stack.spacing = 10
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        return stack
+    }()
+    
+    lazy var headerStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [userImage, nameStack])
+        stack.axis = .horizontal
+        stack.spacing = 16
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stack
+    }()
+    
+    private let userImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 65),
+            imageView.heightAnchor.constraint(equalToConstant: 65)
+        ])
+        
+        return imageView
+    }()
+    
+    lazy var nameStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [nameLabel, loginLabel])
+        stack.axis = .vertical
+        stack.alignment = .leading
+        
+        return stack
+    }()
+    
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.75
+        
+        return label
+    }()
+    
+    private let loginLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .gray
+
+        return label
+    }()
+    
+    private let bioLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        
+        return label
+    }()
+    
+    private let companyInformationView: InformationView = {
+        let label = UILabel()
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.font = UIFont.systemFont(ofSize: 14)
+        
+        return InformationView(image: SFSymbols.company, label: label)
+    }()
+    
+    private let locationInformationView: InformationView = {
+        let label = UILabel()
+        label.setContentHuggingPriority(.init(249), for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        
+        return InformationView(image: SFSymbols.location, label: label)
+    }()
+    
+    private let mailInformatioView: InformationView = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        
+        return InformationView(image: SFSymbols.mail, label: label)
+    }()
+    
+    private let blogInformationView: InformationView = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        
+        return InformationView(image: SFSymbols.link, label: label)
+    }()
+    
+    private let followersFollowingInformationView: InformationView = {
+        let label = UILabel()
+        
+        return InformationView(image: SFSymbols.person, label: label)        
+    }()
 }

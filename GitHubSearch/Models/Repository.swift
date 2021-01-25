@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Repository: Codable {
+struct Repository: Codable {
     var id: Int
     var name: String
     var fullName: String
@@ -30,6 +30,16 @@ class Repository: Codable {
         case language
         case stargazersCount = "stargazers_count"
         case watchersCount = "watchers_count"
+    }
+}
+
+extension Repository: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Repository, rhs: Repository) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 
