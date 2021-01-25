@@ -19,13 +19,11 @@ class SearchResultsViewController: UIViewController {
     var collectionView: UICollectionView!
     var dataSource: CollectionDataSource!
     var username: String!
-    var activityIndicator = UIActivityIndicatorView()
     
     private var users = [User]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
         configureCollectionView()
         configureDataSource()
     }
@@ -42,26 +40,6 @@ class SearchResultsViewController: UIViewController {
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
         view.addSubview(collectionView)
-    }
-    
-    func showActivityIndicator() {
-        activityIndicator.style = .medium
-        activityIndicator.color = .lightGray
-        activityIndicator.hidesWhenStopped = true
-        
-        view.addSubview(activityIndicator)
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-        
-        activityIndicator.startAnimating()
-    }
-    
-    func showEmptyResultsView() {
-        let emptyResultsView = EmptyResultsView(query: username)
-        view.addSubview(emptyResultsView)
     }
 }
 
@@ -122,7 +100,7 @@ extension SearchResultsViewController {
     }
     
     private func initialSnapshot() {
-        showActivityIndicator()
+        showActivityIndicator(view: view)
         
         var snapshot = Snapshot()
         snapshot.appendSections([.main])
@@ -134,21 +112,17 @@ extension SearchResultsViewController {
             switch result {
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.activityIndicator.stopAnimating()
-
-                    let ac = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(ac, animated: true)
-                    
-                    self.showEmptyResultsView()
+                    self.hideActivityIndicator()
+                    self.showEmptyView(over: self.view, with: "sss")
+                    self.showErrorMessageAlert(error.localizedDescription)
                 }
             case .success(let response):
                 self.users = response.items
                 DispatchQueue.main.async {
-                    self.activityIndicator.stopAnimating()
+                    self.hideActivityIndicator()
 
                     if self.users.count == 0 {
-                        self.showEmptyResultsView()
+                        self.showEmptyView(over: self.view, with: self.username)
                     } else {
                         snapshot.appendItems(self.users)
                         self.dataSource.apply(snapshot, animatingDifferences: true)

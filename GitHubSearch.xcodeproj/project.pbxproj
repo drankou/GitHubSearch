@@ -15,6 +15,7 @@
 		1E78663525B9A0A400279898 /* Int+AbbreviationValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78663425B9A0A400279898 /* Int+AbbreviationValue.swift */; };
 		1E78663A25B9A12E00279898 /* NSMutableAttributedString+Append.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78663925B9A12E00279898 /* NSMutableAttributedString+Append.swift */; };
 		1E78663F25B9BEA400279898 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78663E25B9BEA400279898 /* SFSymbols.swift */; };
+		1E78668225BC888700279898 /* UIViewController+ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E78668125BC888700279898 /* UIViewController+ActivityIndicator.swift */; };
 		1E81D68C25AF4F9D00E15E31 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D68B25AF4F9D00E15E31 /* SearchView.swift */; };
 		1E81D69925AF5BB700E15E31 /* GSTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D69825AF5BB700E15E31 /* GSTextField.swift */; };
 		1E81D69E25AF5DA100E15E31 /* GSSearchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E81D69D25AF5DA100E15E31 /* GSSearchButton.swift */; };
@@ -61,6 +62,7 @@
 		1E78663425B9A0A400279898 /* Int+AbbreviationValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+AbbreviationValue.swift"; sourceTree = "<group>"; };
 		1E78663925B9A12E00279898 /* NSMutableAttributedString+Append.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Append.swift"; sourceTree = "<group>"; };
 		1E78663E25B9BEA400279898 /* SFSymbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbols.swift; sourceTree = "<group>"; };
+		1E78668125BC888700279898 /* UIViewController+ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+ActivityIndicator.swift"; sourceTree = "<group>"; };
 		1E81D68B25AF4F9D00E15E31 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		1E81D69825AF5BB700E15E31 /* GSTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GSTextField.swift; sourceTree = "<group>"; };
 		1E81D69D25AF5DA100E15E31 /* GSSearchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GSSearchButton.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				1E81D6E325B0B5E100E15E31 /* UIImage+RoundedImage.swift */,
 				1E78663425B9A0A400279898 /* Int+AbbreviationValue.swift */,
 				1E78663925B9A12E00279898 /* NSMutableAttributedString+Append.swift */,
+				1E78668125BC888700279898 /* UIViewController+ActivityIndicator.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 				1E81D6A925AF998400E15E31 /* SearchResultsViewController.swift in Sources */,
 				1E78660525B4762000279898 /* EmptyResultsView.swift in Sources */,
 				1EF379D025AF37B5005563B6 /* SceneDelegate.swift in Sources */,
+				1E78668225BC888700279898 /* UIViewController+ActivityIndicator.swift in Sources */,
 				1E78663025B9808D00279898 /* InformationView.swift in Sources */,
 				1E78662B25B7837A00279898 /* Repository.swift in Sources */,
 			);
