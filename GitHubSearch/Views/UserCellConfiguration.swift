@@ -52,64 +52,78 @@ class UserCellContentView: UIView, UIContentView {
         guard appliedConfiguration != configuration else { return }
         appliedConfiguration = configuration
 
-        imageView.image = configuration.userImage
-        label.text = configuration.userLogin
+        userImageView.image = configuration.userImage
+        loginLabel.text = configuration.userLogin
     }
-
-    private let imageView = UIImageView()
-    private let label = UILabel()
     
     private func setupInternalViews() {
-        let itemStackView = UIStackView()
-        addSubview(itemStackView)
-        itemStackView.axis = .vertical
-        itemStackView.alignment = .center
-        itemStackView.distribution = .fill
-        itemStackView.spacing = 8
-        
-        itemStackView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(containerStack)
         NSLayoutConstraint.activate([
-            itemStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            itemStackView.topAnchor.constraint(equalTo: self.topAnchor),
-            itemStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            itemStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            containerStack.topAnchor.constraint(equalTo: self.topAnchor),
+            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
         ])
         
-        let imageContainerView = UIView()
-        itemStackView.addArrangedSubview(imageContainerView)
-        
-        imageContainerView.backgroundColor = UIColor.white
-        imageContainerView.layer.shadowColor = UIColor.black.cgColor
-        imageContainerView.layer.shadowOpacity = 0.5
-        imageContainerView.layer.shadowOffset = CGSize(width: 2, height: 4)
-        imageContainerView.layer.cornerRadius = 12
-        imageContainerView.layer.shouldRasterize = true
-        
-        imageContainerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageContainerView.widthAnchor.constraint(equalTo: itemStackView.widthAnchor),
-            imageContainerView.heightAnchor.constraint(equalTo: itemStackView.widthAnchor)
+            userImageView.widthAnchor.constraint(equalTo: self.widthAnchor), //so image height and width is equal to dynamically calculated width of parent view from compositional layout
+            userImageView.heightAnchor.constraint(equalTo: self.widthAnchor)
+        ])
+    }
+    
+    lazy var containerStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [imageContainerView, loginLabel])
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.distribution = .fill
+        stack.spacing = 8
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        imageContainerView.addSubview(userImageView)
+        NSLayoutConstraint.activate([
+            userImageView.leadingAnchor.constraint(equalTo: imageContainerView.leadingAnchor),
+            userImageView.topAnchor.constraint(equalTo: imageContainerView.topAnchor),
+            userImageView.trailingAnchor.constraint(equalTo: imageContainerView.trailingAnchor),
+            userImageView.bottomAnchor.constraint(equalTo: imageContainerView.bottomAnchor),
         ])
         
-        imageContainerView.addSubview(imageView)
-        imageView.contentMode = .scaleAspectFill
+        return stack
+    }()
+
+    private let imageContainerView: UIView = {
+        let containerView = UIView()
+        
+        containerView.backgroundColor = UIColor.white
+        containerView.layer.shadowColor = UIColor.black.cgColor
+        containerView.layer.shadowOpacity = 0.5
+        containerView.layer.shadowOffset = CGSize(width: 2, height: 4)
+        containerView.layer.cornerRadius = 12
+        containerView.layer.shouldRasterize = true
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+                        
+        return containerView
+    }()
+    
+    private let userImageView: UIImageView = {
+        let imageView = UIImageView()
+    
+        imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 12
         imageView.clipsToBounds = true
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: imageContainerView.leadingAnchor),
-            imageView.topAnchor.constraint(equalTo: imageContainerView.topAnchor),
-            imageView.trailingAnchor.constraint(equalTo: imageContainerView.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: imageContainerView.bottomAnchor),
-        ])
-        
-        itemStackView.addArrangedSubview(label)
+
+        return imageView
+    }()
+    
+    private let loginLabel: UILabel = {
+        let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont(name: "AppleSDGothicNeo-Regular", size: UIFont.labelFontSize)!
-        label.numberOfLines = 3
+        label.numberOfLines = 1
         label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.85
+        label.minimumScaleFactor = 0.7
         label.translatesAutoresizingMaskIntoConstraints = false
-    }
+        
+        return label
+    }()
 }
