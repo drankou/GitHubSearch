@@ -63,7 +63,6 @@ class RepositoryCellContentView: UIView, UIContentView {
             repositoryDescription.text = description.isEmpty ? " " : description
         }
         
-        repositoryDescription.sizeToFit()
         stargazersCount.text = "\(configuration.stargazersCount ?? 0)"
         repositoryLanguage.text = configuration.repositoryLanguage
     }
@@ -71,8 +70,9 @@ class RepositoryCellContentView: UIView, UIContentView {
     private func setupInternalViews() {
         //parent view corner radius
         self.layer.borderWidth = 0.3
-        self.layer.borderColor = UIColor.lightGray.cgColor
+        self.layer.borderColor = UIColor.systemGray.cgColor
         self.layer.cornerRadius = 10
+        self.clipsToBounds = true
         
         addSubview(containerStack)
         NSLayoutConstraint.activate([
@@ -92,6 +92,7 @@ class RepositoryCellContentView: UIView, UIContentView {
         stack.isLayoutMarginsRelativeArrangement = true
         stack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.backgroundColor = traitCollection.userInterfaceStyle == .dark ? .systemGray6 : .white
         
         return stack
     }()
@@ -122,7 +123,7 @@ class RepositoryCellContentView: UIView, UIContentView {
     private let userLogin: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .gray
+        label.textColor = .systemGray
         label.setContentHuggingPriority(.required, for: .vertical)
 
         return label
@@ -177,7 +178,7 @@ class RepositoryCellContentView: UIView, UIContentView {
     private let starImageView: UIImageView = {
         let imageView = UIImageView(image: SFSymbols.star)
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .gray
+        imageView.tintColor = .systemGray
         NSLayoutConstraint.activate([
             imageView.heightAnchor.constraint(equalToConstant: 16),
             imageView.widthAnchor.constraint(equalToConstant: 16),
@@ -191,7 +192,7 @@ class RepositoryCellContentView: UIView, UIContentView {
     
     private let stargazersCount: UILabel = {
         let label = UILabel()
-        label.textColor = .gray
+        label.textColor = .systemGray
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentHuggingPriority(.required, for: .vertical)
 
@@ -208,7 +209,7 @@ class RepositoryCellContentView: UIView, UIContentView {
     
     private let repositoryLanguage: UILabel = {
         let label = UILabel()
-        label.textColor = .gray
+        label.textColor = .systemGray
         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
         label.setContentHuggingPriority(.required, for: .vertical)
         

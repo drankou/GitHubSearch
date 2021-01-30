@@ -8,9 +8,6 @@
 import UIKit
 
 class InformationView: UIView {
-    var image: UIImage?
-    var label: UILabel
-    
     var text: String? {
         willSet {
             if let newValue = newValue, !newValue.isEmpty {
@@ -20,10 +17,10 @@ class InformationView: UIView {
             }
         }
     }
-    
+        
     var attributedText: NSAttributedString? {
         willSet {
-            if let newValue = newValue, newValue.length == .zero {
+            if let newValue = newValue, newValue.length != .zero {
                 label.attributedText = newValue
             } else {
                 self.isHidden = true
@@ -31,17 +28,16 @@ class InformationView: UIView {
         }
     }
     
-    init(image: UIImage?, label: UILabel) {
-        self.image = image
-        self.label = label
+    init(image: UIImage) {
         super.init(frame: .zero)
+        self.iconImageView.image = image
         configureView()
     }
     
     lazy var containerStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [iconImageView, label])
         stack.axis = .horizontal
-        stack.alignment = .center
+        stack.alignment = .fill
         stack.distribution = .fillProportionally
         stack.spacing = 5
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -56,13 +52,19 @@ class InformationView: UIView {
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
+            imageView.heightAnchor.constraint(equalToConstant: 20),
             imageView.widthAnchor.constraint(equalToConstant: 20)
         ])
-        
-        imageView.setContentHuggingPriority(.required, for: .horizontal)
-        imageView.setContentHuggingPriority(.required, for: .vertical)
-        
+
         return imageView
+    }()
+    
+    private let label: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .label
+        
+        return label
     }()
     
     private func configureView() {
@@ -74,8 +76,6 @@ class InformationView: UIView {
             containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
         ])
-        
-        iconImageView.image = self.image
     }
     
     required init?(coder: NSCoder) {

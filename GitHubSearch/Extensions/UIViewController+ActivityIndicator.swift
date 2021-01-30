@@ -12,12 +12,12 @@ var activityIndicatorView: UIView?
 extension UIViewController {
     func showActivityIndicator(view: UIView) {
         let containerView = UIView(frame: view.bounds)
-        containerView.backgroundColor = .white
+        containerView.backgroundColor = .systemBackground
         view.addSubview(containerView)
         
         let activityIndicator = UIActivityIndicatorView(style: .medium)
         containerView.addSubview(activityIndicator)
-        activityIndicator.color = .lightGray
+        activityIndicator.color = .systemGray2
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             activityIndicator.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
@@ -36,8 +36,7 @@ extension UIViewController {
             activityIndicatorView = nil
         }
     }
-    
-    
+
     func showErrorMessageAlert(_ message: String) {
         DispatchQueue.main.async {
             let ac = UIAlertController(title: "Error", message: message, preferredStyle: .alert)

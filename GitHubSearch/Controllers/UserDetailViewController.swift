@@ -14,6 +14,12 @@ struct ListItem: Hashable {
 }
 
 class UserDetailViewController: UIViewController {
+    //MARK: Types
+    struct ElementKind {
+        static let layoutHeader = "layout-header-element-kind"
+        static let repositoriesSectionHeader = "repositories-section-header-element-kind"
+    }
+    
     enum Section: Int, CaseIterable {
         case repositories
         case overviewList
@@ -27,99 +33,45 @@ class UserDetailViewController: UIViewController {
     typealias CollectionDataSource = UICollectionViewDiffableDataSource<Section, Item>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     
-    var dataSource: CollectionDataSource! = nil
-    
-    var user: User!
+    //MARK: Properties
     weak var coordinator: MainCoordinator?
+    var dataSource: CollectionDataSource! = nil
+    var collectionView: UICollectionView!
+    var user: User!
     
-    var repositories = [Repository]()
+    var repositories = [
+        Repository(id: 0, name: "go-vader", fullName: "", fork: false, description: "Sentiment Analysis tool using VADER in GO", url: "", language: "Go", stargazersCount: 2, watchersCount: 0),
+        Repository(id: 1, name: "IMS", fullName: "", fork: false, description: "", url: "", language: "C++", stargazersCount: 0, watchersCount: 0),
+        Repository(id: 2, name: "go-freeling", fullName: "", fork: false, description: "Golang Natural Language", url: "", language: "Go", stargazersCount: 2, watchersCount: 0)
+    ]
+    
     var listItems = [
         ListItem(image: SFSymbols.book, name: "Repositories", count: 0),
         ListItem(image: SFSymbols.star, name: "Starred", count: 0),
         ListItem(image: SFSymbols.company, name: "Organizations", count: 0),
     ]
     
-    override func loadView() {
-        let view = UIView(frame: UIScreen.main.bounds)
-        view.backgroundColor = .white
-        self.view = view
-    }
-    
     override func viewDidLoad() {
-        super.viewDidLoad()
-        dummyData()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .action)
+        configureCollectionView()
         
         fetchUserDetails()
-        configureHierarchy()
-        configureDataSource()
-    }
-    
-    
-    var mainStack = UIStackView()
-    var userDetailView: UserDetailView!
-    var collectionView: UICollectionView!
-    
-    private func configureHierarchy() {
-        let scrollView = UIScrollView()
-        view.addSubview(scrollView)
-        
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
-        
-        let containerView = UIView()
-        scrollView.addSubview(containerView)
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-        ])
-        
-        containerView.addSubview(mainStack)
-        mainStack.axis = .vertical
-        mainStack.spacing = 20
-        mainStack.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            mainStack.leadingAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.leadingAnchor),
-            mainStack.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor),
-            mainStack.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor),
-            mainStack.trailingAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.trailingAnchor),
-            mainStack.widthAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.widthAnchor)
-        ])
-        
-        configureUserDetailView()
-        configureCollectionView()
-    }
-    
-    private func configureUserDetailView() {
-        userDetailView = UserDetailView()
-        userDetailView.isHidden = true
-        mainStack.addArrangedSubview(userDetailView)
     }
     
     func configureCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createPerSectionLayout())
-        mainStack.addArrangedSubview(collectionView)
-        collectionView.isHidden = true
-        collectionView.backgroundColor = .white
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createPerSectionLayout())
+        view.addSubview(collectionView)
+        collectionView.backgroundColor = .systemBackground
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            collectionView.heightAnchor.constraint(greaterThanOrEqualToConstant: 350)
-        ])
-        collectionView.isScrollEnabled = false
         collectionView.delegate = self
+        collectionView.isHidden = true
+        
+        collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: ElementKind.layoutHeader, withReuseIdentifier: HeaderSupplementaryView.reuseIdentifier)
+        collectionView.register(RepositoriesSectionTitleView.self, forSupplementaryViewOfKind: ElementKind.repositoriesSectionHeader, withReuseIdentifier: RepositoriesSectionTitleView.reuseIdentifier)
     }
     
     private func fetchUserDetails() {
-        showActivityIndicator(view: view)
+        showActivityIndicator(view: self.view)
         let dataLoader = DataLoader()
         dataLoader.request(.userInfo(for: user.login), of: User.self) { [weak self] (result) in
             guard let self = self else { return }
@@ -138,9 +90,13 @@ class UserDetailViewController: UIViewController {
                 self.user = user
                 
                 DispatchQueue.main.async {
-                    self.userDetailView.user = user
                     self.hideActivityIndicator()
-                    self.userDetailView.isHidden = false
+                                            
+                    //hotfix
+                    // -- this way doesnt mess up scrolling area of repositories seciton, but if conifguration is done in viewDidLoad, than it's problematic
+                    self.configureDataSource()
+                    // --
+                    
                     self.collectionView.isHidden = false
                 }
             }
@@ -163,30 +119,37 @@ extension UserDetailViewController {
             }
         }
         
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(500))
+        let layoutHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: ElementKind.layoutHeader, alignment: .top)
+        
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.interSectionSpacing = 15
+        config.boundarySupplementaryItems = [layoutHeader]
+        layout.configuration = config
+
         return layout
     }
     
     func generateRepositoriesLayoutSection() -> NSCollectionLayoutSection {
-        let estimatedHeight = CGFloat(150) //estimated height has to be set to both item and group size for automatic dynamic cell sizing (based on content)
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.85), heightDimension: .fractionalWidth(0.4))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.85), heightDimension: .absolute(150))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        
+
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15)
+        section.interGroupSpacing = 10
         section.orthogonalScrollingBehavior = .groupPaging
+        
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: ElementKind.repositoriesSectionHeader, alignment: .top)
+        section.boundarySupplementaryItems = [header]
         
         return section
     }
     
     func generateOverviewListLayoutSection() -> NSCollectionLayoutSection {
-        #warning("Set up custom list item layout")
-//        let listConfiguration = UICollectionLayoutListConfiguration(appearance: .plain)
-//        let section = NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
-//        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-        
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
@@ -194,11 +157,17 @@ extension UserDetailViewController {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 15, trailing: 15)
     
         return section
     }
-    
+        
     func configureDataSource() {
+        let layoutHeadersupplementaryRegistration = UICollectionView.SupplementaryRegistration<HeaderSupplementaryView>(elementKind: ElementKind.layoutHeader) { (headerView, kind, indexPath) in
+            //TODO refactor
+            headerView.user = self.user
+        }
+        
         let repositoryCellRegistration = UICollectionView.CellRegistration<RepositoryCell, Repository> { (cell, indexPath, repository) in
             var content = cell.defaultContentConfiguration()
             
@@ -231,17 +200,26 @@ extension UserDetailViewController {
                 return collectionView.dequeueConfiguredReusableCell(using: listCellRegistration, for: indexPath, item: listItem)
             }
         }
-
+        
+        dataSource.supplementaryViewProvider = {(collectionView, kind, indexPath) -> UICollectionReusableView? in
+            switch kind {
+            case ElementKind.layoutHeader:
+                return collectionView.dequeueConfiguredReusableSupplementary(using: layoutHeadersupplementaryRegistration, for: indexPath)
+            case ElementKind.repositoriesSectionHeader:
+                return collectionView.dequeueReusableSupplementaryView(ofKind: ElementKind.repositoriesSectionHeader, withReuseIdentifier: RepositoriesSectionTitleView.reuseIdentifier, for: indexPath)
+            default:
+                fatalError("Failed to get expected supplementary reusable view from collection view. Stopping the program execution")
+            }
+        }
+                
         initialSnapshot()
     }
     
     func initialSnapshot(){
         var snapshot = Snapshot()
-        snapshot.appendSections([.repositories])
-        self.repositories.forEach { snapshot.appendItems([Item.repository($0)]) }
-        
-        snapshot.appendSections([.overviewList])
-        self.listItems.forEach { snapshot.appendItems([Item.listItem($0)]) }
+        snapshot.appendSections([.repositories, .overviewList])
+        snapshot.appendItems(repositories.map { Item.repository($0) }, toSection: .repositories)
+        snapshot.appendItems(listItems.map { Item.listItem($0) }, toSection: .overviewList)
         
         dataSource.apply(snapshot, animatingDifferences: false)
     }
@@ -267,7 +245,5 @@ extension UserDetailViewController: UICollectionViewDelegate {
         case .repository(let repository):
             print("\(repository.name)")
         }
-        
     }
-    
 }
