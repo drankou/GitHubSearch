@@ -18,7 +18,7 @@ class SearchViewController: UIViewController {
         
         let searchView = SearchView()
         searchButton = searchView.searchButton
-        usernameTextField = searchView.usernameTextField
+        usernameTextField = searchView.queryTextField
         
         view = searchView
     }

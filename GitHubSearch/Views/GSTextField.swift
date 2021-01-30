@@ -12,6 +12,23 @@ class GSTextField: UITextField {
         super.init(frame: frame)
         setupView()
     }
+    
+    var textPadding = UIEdgeInsets(
+        top: 5,
+        left: 5,
+        bottom: 5,
+        right: 5
+    )
+
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        let rect = super.textRect(forBounds: bounds)
+        return rect.inset(by: textPadding)
+    }
+
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        let rect = super.editingRect(forBounds: bounds)
+        return rect.inset(by: textPadding)
+    }
 
     private func setupView() {
         layer.cornerRadius = 12
@@ -22,6 +39,7 @@ class GSTextField: UITextField {
         placeholder = "Enter username"
         returnKeyType = .search
         textAlignment = .center
+        textColor = .label
         font = .preferredFont(forTextStyle: .title2)
         adjustsFontSizeToFitWidth = true
         minimumFontSize = 20

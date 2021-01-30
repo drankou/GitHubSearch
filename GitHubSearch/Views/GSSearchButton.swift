@@ -20,10 +20,11 @@ class GSSearchButton: UIButton {
     private func setupView() {
         layer.cornerRadius = 12
         layer.borderWidth = 0.1
-        layer.borderColor = UIColor.lightGray.cgColor
+        layer.borderColor = UIColor.systemGray5.cgColor
         backgroundColor = .systemGreen
-        setTitleColor(UIColor.white, for: .normal)
         titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         setTitle("Search", for: .normal)
+        setTitleColor(UIColor.white, for: .normal)
+        setTitleColor(UIColor.systemGray, for: .highlighted)
     }
 }
