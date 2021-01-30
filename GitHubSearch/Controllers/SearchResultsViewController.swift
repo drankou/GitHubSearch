@@ -36,10 +36,10 @@ class SearchResultsViewController: UIViewController {
     
     func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        collectionView.backgroundColor = .white
+        view.addSubview(collectionView)
+        collectionView.backgroundColor = .systemBackground
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
-        view.addSubview(collectionView)
     }
 }
 
