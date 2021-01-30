@@ -71,11 +71,9 @@ class HeaderSupplementaryView: UICollectionReusableView {
         stack.axis = .vertical
         stack.alignment = .fill
         stack.distribution = .fillProportionally
-        stack.spacing = 5
-        
-        //?: enable layoutMargins break layout and scrolling areas in collection view
-        
+        stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
+        //?: enable layoutMargins break layout and scrolling areas in collection view
 
         return stack
     }()
@@ -84,9 +82,11 @@ class HeaderSupplementaryView: UICollectionReusableView {
         let stack = UIStackView(arrangedSubviews: [userImage, nameStack])
         stack.axis = .horizontal
         stack.spacing = 16
-        stack.alignment = .fill
+        stack.alignment = .center
         stack.distribution = .fillProportionally
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            stack.heightAnchor.constraint(equalToConstant: 80)
+        ])
         
         return stack
     }()
@@ -94,7 +94,6 @@ class HeaderSupplementaryView: UICollectionReusableView {
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalToConstant: 65),
             imageView.heightAnchor.constraint(equalToConstant: 65)
