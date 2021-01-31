@@ -75,12 +75,9 @@ class RepositoryCellContentView: UIView, UIContentView {
         self.clipsToBounds = true
         
         addSubview(containerStack)
-        NSLayoutConstraint.activate([
-            containerStack.topAnchor.constraint(equalTo: self.topAnchor),
-            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        ])
+        containerStack.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
     }
         
     lazy var containerStack: UIStackView = {
@@ -109,10 +106,10 @@ class RepositoryCellContentView: UIView, UIContentView {
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 25),
-            imageView.widthAnchor.constraint(equalToConstant: 25),
-        ])
+        imageView.snp.makeConstraints { (make) in
+            make.width.equalTo(25)
+            make.height.equalTo(25)
+        }
         
         imageView.setContentHuggingPriority(.required, for: .vertical)
         imageView.setContentHuggingPriority(.required, for: .horizontal)
@@ -179,10 +176,10 @@ class RepositoryCellContentView: UIView, UIContentView {
         let imageView = UIImageView(image: SFSymbols.star)
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .systemGray
-        NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 16),
-            imageView.widthAnchor.constraint(equalToConstant: 16),
-        ])
+        imageView.snp.makeConstraints { (make) in
+            make.width.equalTo(16)
+            make.height.equalTo(16)
+        }
         
         imageView.setContentHuggingPriority(.required, for: .horizontal)
         imageView.setContentHuggingPriority(.required, for: .vertical)

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class SearchView: UIView {
     let queryTextField = GSTextField()
@@ -22,10 +23,10 @@ class SearchView: UIView {
     private func configure(){
         backgroundColor = .systemBackground
         addSubview(containerStack)
-        NSLayoutConstraint.activate([
-            containerStack.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor, constant: 0),
-            containerStack.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor, constant: -70),
-        ])
+        containerStack.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-70)
+        }
         
         logoImageView.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : .black
     }
@@ -46,10 +47,10 @@ class SearchView: UIView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "github-logo.png")?.withRenderingMode(.alwaysTemplate)
-        NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 230),
-            imageView.widthAnchor.constraint(equalToConstant: 230),
-        ])
+        imageView.snp.makeConstraints { (make) in
+            make.width.equalTo(230)
+            make.height.equalTo(230)
+        }
         
         return imageView
     }()

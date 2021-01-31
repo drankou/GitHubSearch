@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class InformationView: UIView {
     var text: String? {
@@ -51,10 +52,10 @@ class InformationView: UIView {
         imageView.tintColor = .systemGray
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 20),
-            imageView.widthAnchor.constraint(equalToConstant: 20)
-        ])
+        imageView.snp.makeConstraints { (make) in
+            make.width.equalTo(20)
+            make.height.equalTo(20)
+        }
 
         return imageView
     }()
@@ -69,13 +70,9 @@ class InformationView: UIView {
     
     private func configureView() {
         addSubview(containerStack)
-    
-        NSLayoutConstraint.activate([
-            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            containerStack.topAnchor.constraint(equalTo: self.topAnchor),
-            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        ])
+        containerStack.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
     }
     
     required init?(coder: NSCoder) {

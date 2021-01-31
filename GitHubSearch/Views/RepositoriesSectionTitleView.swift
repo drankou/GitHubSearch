@@ -21,10 +21,10 @@ class RepositoriesSectionTitleView: UICollectionReusableView {
         let imageView = UIImageView(image: SFSymbols.star)
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .systemGray
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 25),
-            imageView.heightAnchor.constraint(equalToConstant: 25),
-        ])
+        imageView.snp.makeConstraints { (make) in
+            make.width.equalTo(25)
+            make.height.equalTo(25)
+        }
         
         return imageView
     }()
@@ -50,11 +50,8 @@ class RepositoriesSectionTitleView: UICollectionReusableView {
     
     private func configure() {
         addSubview(containerStack)
-        NSLayoutConstraint.activate([
-            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            containerStack.topAnchor.constraint(equalTo: self.topAnchor),
-            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        ])
+        containerStack.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
     }
 }

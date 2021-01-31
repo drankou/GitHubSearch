@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class EmptyResultsView: UIView {
     init(text: String) {
@@ -26,10 +27,9 @@ class EmptyResultsView: UIView {
         addSubview(label)
         
         label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            label.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.8)
-        ])
+        label.snp.makeConstraints { (make) in
+            make.center.equalTo(self)
+            make.width.equalTo(self).multipliedBy(0.8)
+        }
     }
 }

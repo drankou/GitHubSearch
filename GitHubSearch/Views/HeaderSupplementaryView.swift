@@ -56,12 +56,9 @@ class HeaderSupplementaryView: UICollectionReusableView {
     
     private func configure() {
         addSubview(containerStack)
-        NSLayoutConstraint.activate([
-            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
-            containerStack.topAnchor.constraint(equalTo: self.topAnchor, constant: 15),
-            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant:  -15),
-            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -15),
-        ])
+        containerStack.snp.makeConstraints { (make) in
+            make.edges.equalTo(self).inset(15)
+        }
     }
     
     lazy var containerStack: UIStackView = {
@@ -84,20 +81,20 @@ class HeaderSupplementaryView: UICollectionReusableView {
         stack.spacing = 16
         stack.alignment = .center
         stack.distribution = .fillProportionally
-        NSLayoutConstraint.activate([
-            stack.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
+        stack.snp.makeConstraints { (make) in
+            make.height.equalTo(80)
+        }
+
         return stack
     }()
     
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 65),
-            imageView.heightAnchor.constraint(equalToConstant: 65)
-        ])
+        imageView.snp.makeConstraints { (make) in
+            make.width.equalTo(70)
+            make.height.equalTo(70)
+        }
         
         return imageView
     }()

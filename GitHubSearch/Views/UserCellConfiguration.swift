@@ -58,17 +58,15 @@ class UserCellContentView: UIView, UIContentView {
     
     private func setupInternalViews() {
         addSubview(containerStack)
-        NSLayoutConstraint.activate([
-            containerStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            containerStack.topAnchor.constraint(equalTo: self.topAnchor),
-            containerStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            containerStack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        ])
+        containerStack.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
         
-        NSLayoutConstraint.activate([
-            userImageView.widthAnchor.constraint(equalTo: self.widthAnchor), //so image height and width is equal to dynamically calculated width of parent view from compositional layout
-            userImageView.heightAnchor.constraint(equalTo: self.widthAnchor)
-        ])
+        //so image height and width is equal to dynamically calculated width of parent view from
+        userImageView.snp.makeConstraints { (make) in
+            make.width.equalTo(self.snp.width)
+            make.height.equalTo(self.snp.width)
+        }
     }
     
     lazy var containerStack: UIStackView = {
@@ -80,12 +78,9 @@ class UserCellContentView: UIView, UIContentView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         imageContainerView.addSubview(userImageView)
-        NSLayoutConstraint.activate([
-            userImageView.leadingAnchor.constraint(equalTo: imageContainerView.leadingAnchor),
-            userImageView.topAnchor.constraint(equalTo: imageContainerView.topAnchor),
-            userImageView.trailingAnchor.constraint(equalTo: imageContainerView.trailingAnchor),
-            userImageView.bottomAnchor.constraint(equalTo: imageContainerView.bottomAnchor),
-        ])
+        userImageView.snp.makeConstraints { (make) in
+            make.edges.equalTo(imageContainerView)
+        }
         
         return stack
     }()
