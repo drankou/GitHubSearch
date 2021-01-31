@@ -53,10 +53,16 @@ class UserDetailViewController: UIViewController {
     ]
     
     override func viewDidLoad() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .action)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareProfileURL))
         configureCollectionView()
 
         fetchUserDetails()
+    }
+    
+    @objc func shareProfileURL(_ sender: UIBarButtonItem) {
+        let items = [URL(string: user.htmlURL)!]
+        let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        present(ac, animated: true)
     }
     
     func configureCollectionView() {
