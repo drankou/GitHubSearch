@@ -42,7 +42,7 @@ class RepositoriesSectionTitleView: UICollectionReusableView {
         let stack = UIStackView(arrangedSubviews: [popularImageView, label])
         stack.axis = .horizontal
         stack.alignment = .center
-        stack.spacing = 10
+        stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         return stack

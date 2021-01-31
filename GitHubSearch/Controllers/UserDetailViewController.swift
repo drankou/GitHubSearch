@@ -6,11 +6,17 @@
 //
 
 import UIKit
+import PromiseKit
 
 struct ListItem: Hashable {
+    enum Category: String {
+        case repositories = "Repositories"
+        case starred = "Starred"
+        case organizations = "Organizations"
+    }
+    
     var image: UIImage
-    var name: String
-    var count: Int
+    var category: Category
 }
 
 class UserDetailViewController: UIViewController {
@@ -38,23 +44,18 @@ class UserDetailViewController: UIViewController {
     var dataSource: CollectionDataSource! = nil
     var collectionView: UICollectionView!
     var user: User!
-    
-    var repositories = [
-        Repository(id: 0, name: "go-vader", fullName: "", fork: false, description: "Sentiment Analysis tool using VADER in GO", url: "", language: "Go", stargazersCount: 2, watchersCount: 0),
-        Repository(id: 1, name: "IMS", fullName: "", fork: false, description: "", url: "", language: "C++", stargazersCount: 0, watchersCount: 0),
-        Repository(id: 2, name: "go-freeling", fullName: "", fork: false, description: "Golang Natural Language", url: "", language: "Go", stargazersCount: 2, watchersCount: 0)
-    ]
-    
+  
+    var repositories = [Repository]()
     var listItems = [
-        ListItem(image: SFSymbols.book, name: "Repositories", count: 0),
-        ListItem(image: SFSymbols.star, name: "Starred", count: 0),
-        ListItem(image: SFSymbols.company, name: "Organizations", count: 0),
+        ListItem(image: SFSymbols.book, category: .repositories),
+        ListItem(image: SFSymbols.star, category: .starred),
+        ListItem(image: SFSymbols.company, category: .organizations)
     ]
     
     override func viewDidLoad() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .action)
         configureCollectionView()
-        
+
         fetchUserDetails()
     }
     
@@ -72,34 +73,29 @@ class UserDetailViewController: UIViewController {
     
     private func fetchUserDetails() {
         showActivityIndicator(view: self.view)
-        let dataLoader = DataLoader()
-        dataLoader.request(.userInfo(for: user.login), of: User.self) { [weak self] (result) in
-            guard let self = self else { return }
 
-            switch result {
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.hideActivityIndicator()
-                    self.showErrorMessageAlert(error.localizedDescription)
-                }
-            case .success(let user):
-                //copy existing image to new user instance
-                if self.user.avatarImage != ImageCache.publicCache.placeholderImage {
-                    user.avatarImage = self.user.avatarImage
-                }
-                self.user = user
-                
-                DispatchQueue.main.async {
-                    self.hideActivityIndicator()
-                                            
-                    //hotfix
-                    // -- this way doesnt mess up scrolling area of repositories seciton, but if conifguration is done in viewDidLoad, than it's problematic
-                    self.configureDataSource()
-                    // --
-                    
-                    self.collectionView.isHidden = false
-                }
-            }
+        let dataLoader = DataLoader()
+
+        //TODO image caching
+        firstly {
+            when(fulfilled: dataLoader.getImage(user.avatarURL!), dataLoader.getUserDetail(for: user.login), dataLoader.getRepos(for: user.login), dataLoader.getStarred(for: user.login))
+        }.done { (avatarImage, user, repos, starred) in
+            self.user = user
+            self.user.avatarImage = avatarImage ?? ImageCache.publicCache.placeholderImage
+            self.repositories = repos
+            self.user.starred = starred
+            self.user.repos = repos
+        }.catch { (error) in
+            self.showErrorMessageAlert(error.localizedDescription)
+        }.finally {
+            //TODO refactor
+            //hotfix
+            // -- this way doesnt mess up scrolling area of repositories seciton; confgured in viewDidLoad causes inconsistent layout
+            self.configureDataSource()
+            // --
+
+            self.hideActivityIndicator()
+            self.collectionView.isHidden = false
         }
     }
 }
@@ -138,12 +134,12 @@ extension UserDetailViewController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15)
         section.interGroupSpacing = 10
         section.orthogonalScrollingBehavior = .groupPaging
         
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: ElementKind.repositoriesSectionHeader, alignment: .top)
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: ElementKind.repositoriesSectionHeader, alignment: .top, absoluteOffset: CGPoint(x: 0, y: 5))
         section.boundarySupplementaryItems = [header]
         
         return section
@@ -157,7 +153,7 @@ extension UserDetailViewController {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 15, trailing: 15)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15)
     
         return section
     }
@@ -185,7 +181,7 @@ extension UserDetailViewController {
             var content = cell.defaultContentConfiguration()
             
             content.image = item.image
-            content.text = item.name
+            content.text = item.category.rawValue
 
             cell.contentConfiguration = content
         }
@@ -211,27 +207,17 @@ extension UserDetailViewController {
                 fatalError("Failed to get expected supplementary reusable view from collection view. Stopping the program execution")
             }
         }
-                
+        
         initialSnapshot()
     }
     
     func initialSnapshot(){
         var snapshot = Snapshot()
         snapshot.appendSections([.repositories, .overviewList])
-        snapshot.appendItems(repositories.map { Item.repository($0) }, toSection: .repositories)
+        snapshot.appendItems(repositories.prefix(5).map { Item.repository($0) }, toSection: .repositories)
         snapshot.appendItems(listItems.map { Item.listItem($0) }, toSection: .overviewList)
         
         dataSource.apply(snapshot, animatingDifferences: false)
-    }
-    
-    func dummyData() {
-        self.repositories = [
-            Repository(id: 0, name: "go-vader", fullName: "", owner: user, fork: false, description: "Sentiment Analysis tool using VADER in GO", url: "", language: "Go", stargazersCount: 2, watchersCount: 0),
-            Repository(id: 1, name: "IMS", fullName: "", owner: user, fork: false, description: "", url: "", language: "C++", stargazersCount: 0, watchersCount: 0),
-            Repository(id: 2, name: "go-freeling", fullName: "", owner: user, fork: false, description: "Golang Natural Language", url: "", language: "Go", stargazersCount: 2, watchersCount: 0),
-            Repository(id: 3, name: "coinmarketcap-go", fullName: "", owner: user, fork: false, description: "API wrapper for Coinmarketcap implemented in GoLang", url: "", language: "Go", stargazersCount: 0, watchersCount: 0),
-            Repository(id: 4, name: "iza-proj2", fullName: "", owner: user, fork: false, description: "", url: "", language: "Go", stargazersCount: 0, watchersCount: 0)
-        ]
     }
 }
 
@@ -241,9 +227,16 @@ extension UserDetailViewController: UICollectionViewDelegate {
         
         switch item {
         case .listItem(let listItem):
-            print("\(listItem.name)")
-        case .repository(let repository):
-            print("\(repository.name)")
+            switch listItem.category {
+            case .repositories:
+                self.coordinator.showRepositoriesList(self.user.repos)
+            case .starred:
+                self.coordinator.showRepositoriesList(self.user.starred)
+            case .organizations:
+                self.coordinator.showOrganizationsList(self.user.organizations)
+            }
+        case .repository(_):
+            return
         }
     }
 }

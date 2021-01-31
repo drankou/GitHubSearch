@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class SearchResultsViewController: UIViewController {
     typealias CollectionDataSource = UICollectionViewDiffableDataSource<Section, User>
@@ -74,20 +75,21 @@ extension SearchResultsViewController {
             content.userLogin = user.login
             content.userImage = user.avatarImage
             
-            ImageCache.publicCache.load(url: user.avatarURL! as NSURL, item: user) { [weak self] (fetchedUser, image) in
-                guard let self = self else { return }
-                if let img = image, img != fetchedUser.avatarImage {
-                    var updatedSnapshot = self.dataSource.snapshot()
-                    if let index = updatedSnapshot.indexOfItem(user) {
-                        let user = self.users[index]
-                        user.avatarImage = img
-                        updatedSnapshot.reloadItems([user])
-                        DispatchQueue.main.async {
-                            self.dataSource.apply(updatedSnapshot, animatingDifferences: true)
-                        }
-                    }
-                }
-            }
+            //TODO image loading and caching
+//            ImageCache.publicCache.load(url: user.avatarURL! as NSURL, item: user) { [weak self] (fetchedUser, image) in
+//                guard let self = self else { return }
+//                if let img = image, img != fetchedUser.avatarImage {
+//                    var updatedSnapshot = self.dataSource.snapshot()
+//                    if let index = updatedSnapshot.indexOfItem(user) {
+//                        let user = self.users[index]
+//                        user.avatarImage = img
+//                        updatedSnapshot.reloadItems([user])
+//                        DispatchQueue.main.async {
+//                            self.dataSource.apply(updatedSnapshot, animatingDifferences: true)
+//                        }
+//                    }
+//                }
+//            }
             
             cell.contentConfiguration = content
         }
@@ -104,32 +106,24 @@ extension SearchResultsViewController {
         
         var snapshot = Snapshot()
         snapshot.appendSections([.main])
-        
-        let dataLoader = DataLoader()
-        dataLoader.request(.searchUsers(matching: username), of: UserSearchResponse.self) { [weak self] (result) in
-            guard let self = self else { return }
             
-            switch result {
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.hideActivityIndicator()
-                    self.showEmptyView(over: self.view, with: "sss")
-                    self.showErrorMessageAlert(error.localizedDescription)
-                }
-            case .success(let response):
-                self.users = response.items
-                DispatchQueue.main.async {
-                    self.hideActivityIndicator()
+        let dataLoader = DataLoader()
+        dataLoader.request(.searchUsers(matching: username), of: UsersSearchResponse.self)
+            .done { (searchResponse) -> Void in
+                self.users = searchResponse.all
 
-                    if self.users.count == 0 {
-                        self.showEmptyView(over: self.view, with: self.username)
-                    } else {
-                        snapshot.appendItems(self.users)
-                        self.dataSource.apply(snapshot, animatingDifferences: true)
-                    }
+                if self.users.count == 0 {
+                    self.showEmptyView(over: self.view, with: self.username)
+                } else {
+                    snapshot.appendItems(self.users, toSection: .main)
+                    self.dataSource.apply(snapshot, animatingDifferences: true)
                 }
+            }.catch { (error) in
+                self.showEmptyView(over: self.view, with: "No results")
+                self.showErrorMessageAlert(error.localizedDescription)
+            }.finally {
+                self.hideActivityIndicator()
             }
-        }
     }
 }
 

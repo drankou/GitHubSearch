@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Alamofire
+import PromiseKit
 
 enum EndpointError: Error {
     case dataNotAvailable
@@ -39,38 +41,82 @@ extension Endpoint {
         )
     }
     
-    static func userInfo(for login: String) -> Endpoint {
+    static func detail(for user: String) -> Endpoint {
         return Endpoint(
-            path: "/users/\(login)",
-            queryItems: [URLQueryItem]()
+            path: "/users/\(user)",
+            queryItems: []
+        )
+    }
+    
+    static func starred(by user: String) -> Endpoint {
+        return Endpoint(
+            path: "/users/\(user)/starred",
+            queryItems: []
+        )
+    }
+    
+    static func repos(of user: String) -> Endpoint {
+        return Endpoint(
+            path: "/users/\(user)/repos",
+            queryItems: []
+        )
+    }
+    
+    static func organizations(of user: String) -> Endpoint {
+        return Endpoint(
+            path: "/users/\(user)/orgs",
+            queryItems: []
         )
     }
 }
 
 
 class DataLoader {
-    func request<T:Decodable>(_ endpoint: Endpoint, of type: T.Type, completion: @escaping (Result<T, EndpointError>) -> Void) {
-        guard let url = endpoint.url else {
-            return completion(.failure(.invalidURL))
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                return completion(.failure(.serverError(error: error)))
-            }
-            
-            if let jsonData = data {
-                do {
-                    let response = try JSONDecoder().decode(T.self, from: jsonData)
-                    completion(.success(response))
-                } catch {
-                    completion(.failure(.jsonDecoderError(error: error)))
+    func getImage(_ url: URL) ->Promise<UIImage?> {
+        return Promise {seal in
+            AF.request(url)
+                .validate()
+                .responseData { (response) in
+                    if let error = response.error {
+                        return seal.reject(error)
+                    }
+
+                    if let data = response.data {
+                        return seal.fulfill(UIImage(data: data))
+                    }
                 }
-            } else {
-                completion(.failure(.dataNotAvailable))
-            }
         }
-        
-        task.resume()
+    }
+    
+    func getUserDetail(for user: String) -> Promise<User> {
+        return request(.detail(for: user), of: User.self)
+    }
+    
+    func getStarred(for user: String) -> Promise<[Repository]> {
+        return request(.starred(by: user), of: [Repository].self)
+    }
+    
+    func getRepos(for user: String) -> Promise<[Repository]> {
+        return request(.repos(of: user), of: [Repository].self)
+    }
+    
+    func request<T:Decodable>(_ endpoint: Endpoint, of type: T.Type) -> Promise<T>{
+        return Promise { seal in
+            guard let url = endpoint.url else {
+                return seal.reject(AFError.invalidURL(url: endpoint.url!))
+            }
+                
+            AF.request(url)
+                .validate()
+                .responseDecodable(of: T.self) { (response) in
+                    if let error = response.error {
+                        return seal.reject(error)
+                    }
+                    
+                    if let value = response.value {
+                        seal.fulfill(value)
+                    }
+                }
+        }
     }
 }

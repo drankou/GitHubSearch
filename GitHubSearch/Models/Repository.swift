@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct Repository: Codable {
+class Repository: Codable {
     var id: Int
     var name: String
     var fullName: String
     var owner: User?
     var fork: Bool
-    var description: String
+    var description: String?
     var url: String
-    var language: String
+    var language: String?
     var stargazersCount: Int
     var watchersCount: Int
     

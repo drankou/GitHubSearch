@@ -7,12 +7,13 @@
 
 import UIKit
 
+
 class User: Codable, Hashable {
     enum UserType: String, Codable {
         case organization = "Organization"
         case user = "User"
     }
-    
+
     var id: Int
     var name: String?
     var login: String
@@ -24,7 +25,11 @@ class User: Codable, Hashable {
     var email: String?
     var followers: Int?
     var following: Int?
-
+    
+    var repos: [Repository]?
+    var starred: [Repository]?
+    var organizations: [Organization]?
+    
     var htmlURL: String
     var followersURL: String
     var followingURL: String
@@ -58,10 +63,6 @@ class User: Codable, Hashable {
     static func ==(lhs:User, rhs:User) -> Bool {
         lhs.id == rhs.id
     }
-}
-
-struct UserSearchResponse: Codable, Hashable {
-    var items: [User]
 }
 
 extension User {
