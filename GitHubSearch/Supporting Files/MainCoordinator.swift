@@ -34,4 +34,20 @@ class MainCoordinator: Coordinator {
         userDetailVC.user = user
         navigationController.pushViewController(userDetailVC, animated: true)
     }
+    
+    func showRepositoriesList(for user: User, starred: Bool = false) {
+        let listVC = ListViewController()
+        listVC.coordinator = self
+        listVC.user = user
+        listVC.listType = starred ? .starred : .repositories
+        navigationController.pushViewController(listVC, animated: true)
+    }
+    
+    func showOrganizationsList(for user: User) {
+        let listVC = ListViewController()
+        listVC.coordinator = self
+        listVC.user = user
+        listVC.listType = .organizations
+        navigationController.pushViewController(listVC, animated: true)
+    }
 }

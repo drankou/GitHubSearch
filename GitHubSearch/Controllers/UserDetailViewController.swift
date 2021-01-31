@@ -233,6 +233,14 @@ extension UserDetailViewController: UICollectionViewDelegate {
         
         switch item {
         case .listItem(let listItem):
+            switch listItem.category {
+            case .repositories:
+                self.coordinator?.showRepositoriesList(for: user)
+            case .starred:
+                self.coordinator?.showRepositoriesList(for: user, starred: true)
+            case .organizations:
+                self.coordinator?.showOrganizationsList(for: user)
+            }
             print(listItem.category.rawValue)
         case .repository(_):
             return
