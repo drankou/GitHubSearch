@@ -82,7 +82,6 @@ class UserDetailViewController: UIViewController {
 
         let dataLoader = DataLoader()
 
-        //TODO image caching
         firstly {
             when(fulfilled: ImageCache.publicCache.getImage(user.avatarURL!), dataLoader.getUserDetail(for: user.login), dataLoader.getRepos(for: user.login))
         }.done { (avatarImage, user, repos) in
@@ -243,5 +242,7 @@ extension UserDetailViewController: UICollectionViewDelegate {
         case .repository(_):
             return
         }
+        
+        collectionView.deselectItem(at: indexPath, animated: false)
     }
 }

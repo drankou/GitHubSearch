@@ -10,7 +10,7 @@ import Foundation
 class Organization: Codable, Hashable  {
     var id: Int
     var login: String
-    var description: String
+    var description: String?
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)

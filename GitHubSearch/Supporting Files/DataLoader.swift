@@ -85,6 +85,10 @@ class DataLoader {
         return request(.repos(of: user), of: [Repository].self)
     }
     
+    func getOrganizations(for user: String) -> Promise<[Organization]> {
+        return request(.organizations(of: user), of: [Organization].self)
+    }
+    
     func searchUsers(query: String) -> Promise<[User]> {
        request(.searchUsers(matching: query), of: UsersSearchResponse.self)
         .then { (response) -> Promise<[User]> in
