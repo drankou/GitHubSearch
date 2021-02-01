@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import AlamofireImage
 import PromiseKit
 
 enum EndpointError: Error {
@@ -72,22 +73,6 @@ extension Endpoint {
 
 
 class DataLoader {
-    func getImage(_ url: URL) ->Promise<UIImage?> {
-        return Promise {seal in
-            AF.request(url)
-                .validate()
-                .responseData { (response) in
-                    if let error = response.error {
-                        return seal.reject(error)
-                    }
-
-                    if let data = response.data {
-                        return seal.fulfill(UIImage(data: data))
-                    }
-                }
-        }
-    }
-    
     func getUserDetail(for user: String) -> Promise<User> {
         return request(.detail(for: user), of: User.self)
     }
@@ -100,6 +85,13 @@ class DataLoader {
         return request(.repos(of: user), of: [Repository].self)
     }
     
+    func searchUsers(query: String) -> Promise<[User]> {
+       request(.searchUsers(matching: query), of: UsersSearchResponse.self)
+        .then { (response) -> Promise<[User]> in
+            Promise.value(response.all)
+        }
+    }
+    
     func request<T:Decodable>(_ endpoint: Endpoint, of type: T.Type) -> Promise<T>{
         return Promise { seal in
             guard let url = endpoint.url else {
@@ -109,12 +101,11 @@ class DataLoader {
             AF.request(url)
                 .validate()
                 .responseDecodable(of: T.self) { (response) in
-                    if let error = response.error {
-                        return seal.reject(error)
-                    }
-                    
-                    if let value = response.value {
+                    switch response.result{
+                    case.success(let value):
                         seal.fulfill(value)
+                    case.failure(let error):
+                        return seal.reject(error)
                     }
                 }
         }

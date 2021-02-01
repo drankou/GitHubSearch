@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import PromiseKit
 
 class SearchResultsViewController: UIViewController {
     typealias CollectionDataSource = UICollectionViewDiffableDataSource<Section, User>
@@ -74,22 +75,23 @@ extension SearchResultsViewController {
             var content =  cell.defaultCellConfiguration()
             content.userLogin = user.login
             content.userImage = user.avatarImage
-            
-            //TODO image loading and caching
-//            ImageCache.publicCache.load(url: user.avatarURL! as NSURL, item: user) { [weak self] (fetchedUser, image) in
-//                guard let self = self else { return }
-//                if let img = image, img != fetchedUser.avatarImage {
-//                    var updatedSnapshot = self.dataSource.snapshot()
-//                    if let index = updatedSnapshot.indexOfItem(user) {
-//                        let user = self.users[index]
-//                        user.avatarImage = img
-//                        updatedSnapshot.reloadItems([user])
-//                        DispatchQueue.main.async {
-//                            self.dataSource.apply(updatedSnapshot, animatingDifferences: true)
-//                        }
-//                    }
-//                }
-//            }
+
+            firstly {
+                ImageCache.publicCache.getImage(user.avatarURL!)
+            }
+            .done { (image) -> Void in
+                if image != user.avatarImage {
+                    var updatedSnapshot = self.dataSource.snapshot()
+                    if let index = updatedSnapshot.indexOfItem(user) {
+                        let user = self.users[index]
+                        user.avatarImage = image
+                        updatedSnapshot.reloadItems([user])
+                        self.dataSource.apply(updatedSnapshot, animatingDifferences: true)
+                    }
+                }
+            }.catch { (error) in
+                print(error.localizedDescription)
+            }
             
             cell.contentConfiguration = content
         }
@@ -108,22 +110,23 @@ extension SearchResultsViewController {
         snapshot.appendSections([.main])
             
         let dataLoader = DataLoader()
-        dataLoader.request(.searchUsers(matching: username), of: UsersSearchResponse.self)
-            .done { (searchResponse) -> Void in
-                self.users = searchResponse.all
-
-                if self.users.count == 0 {
-                    self.showEmptyView(over: self.view, with: self.username)
-                } else {
-                    snapshot.appendItems(self.users, toSection: .main)
-                    self.dataSource.apply(snapshot, animatingDifferences: true)
-                }
-            }.catch { (error) in
-                self.showEmptyView(over: self.view, with: "No results")
-                self.showErrorMessageAlert(error.localizedDescription)
-            }.finally {
-                self.hideActivityIndicator()
+        firstly {
+            dataLoader.searchUsers(query: username)
+        }
+        .done { (users) -> Void in
+            self.users = users
+            if self.users.count == 0 {
+                self.showEmptyView(over: self.view, with: self.username)
+            } else {
+                snapshot.appendItems(self.users, toSection: .main)
+                self.dataSource.apply(snapshot, animatingDifferences: true)
             }
+        }.catch { (error) in
+            self.showEmptyView(over: self.view, with: "No results")
+            self.showErrorMessageAlert(error.localizedDescription)
+        }.finally {
+            self.hideActivityIndicator()
+        }
     }
 }
 

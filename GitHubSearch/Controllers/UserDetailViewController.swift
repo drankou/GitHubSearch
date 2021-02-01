@@ -46,7 +46,7 @@ class UserDetailViewController: UIViewController {
     var user: User!
   
     var repositories = [Repository]()
-    var listItems = [
+    let listItems = [
         ListItem(image: SFSymbols.book, category: .repositories),
         ListItem(image: SFSymbols.star, category: .starred),
         ListItem(image: SFSymbols.company, category: .organizations)
@@ -84,13 +84,11 @@ class UserDetailViewController: UIViewController {
 
         //TODO image caching
         firstly {
-            when(fulfilled: dataLoader.getImage(user.avatarURL!), dataLoader.getUserDetail(for: user.login), dataLoader.getRepos(for: user.login), dataLoader.getStarred(for: user.login))
-        }.done { (avatarImage, user, repos, starred) in
+            when(fulfilled: ImageCache.publicCache.getImage(user.avatarURL!), dataLoader.getUserDetail(for: user.login), dataLoader.getRepos(for: user.login))
+        }.done { (avatarImage, user, repos) in
             self.user = user
-            self.user.avatarImage = avatarImage ?? ImageCache.publicCache.placeholderImage
+            self.user.avatarImage = avatarImage
             self.repositories = repos
-            self.user.starred = starred
-            self.user.repos = repos
         }.catch { (error) in
             self.showErrorMessageAlert(error.localizedDescription)
         }.finally {

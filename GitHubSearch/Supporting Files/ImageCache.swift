@@ -6,53 +6,50 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireImage
+import PromiseKit
 import Foundation
 
 public class ImageCache {
-    
     public static let publicCache = ImageCache()
+
     var placeholderImage = UIImage(named: "user-default.png")!
-    private let cachedImages = NSCache<NSURL, UIImage>()
-    private var loadingResponses = [NSURL: [(User, UIImage?) -> Swift.Void]]()
+    let imageCache = AutoPurgingImageCache(
+        memoryCapacity: 100_000_000,
+        preferredMemoryUsageAfterPurge: 60_000_000
+    )
     
-    public final func image(url: NSURL) -> UIImage? {
-        return cachedImages.object(forKey: url)
+    private var loadingResponses = [URL: Promise<UIImage>]()
+
+    func getImage(_ url: URL) -> Promise<UIImage> {
+        if let pendingPromise = loadingResponses[url] {
+            return pendingPromise
+        }
+        
+        let promise = Promise<UIImage> {seal in
+            if let cachedImage = cachedImage(for: url) {
+                seal.fulfill(cachedImage)
+            }
+            
+            AF.request(url)
+                .validate()
+                .responseImage { (response) in
+                    switch response.result {
+                    case.success(let image):
+                        seal.fulfill(image)
+                        self.imageCache.add(image, for: URLRequest(url: url, cachePolicy: .returnCacheDataDontLoad))
+                    case.failure(let error):
+                        seal.reject(error)
+                    }
+                }
+        }
+        
+        loadingResponses[url] = promise
+        return promise
     }
-
-    final func load(url: NSURL, item: User, completion: @escaping (User, UIImage?) -> Swift.Void) {
-        if let cachedImage = image(url: url) {
-            DispatchQueue.main.async {
-                completion(item, cachedImage)
-            }
-            return
-        }
-        
-        if loadingResponses[url] != nil {
-            loadingResponses[url]?.append(completion)
-            return
-        } else {
-            loadingResponses[url] = [completion]
-        }
-  
-       let task = URLSession.shared.dataTask(with: url as URL) { (data, response, error) in
-            guard let responseData = data, let image = UIImage(data: responseData),
-                  let blocks = self.loadingResponses[url], error == nil else {
-                DispatchQueue.main.async {
-                    completion(item, nil)
-                }
-                return
-            }
-
-            self.cachedImages.setObject(image, forKey: url, cost: responseData.count)
-        
-            for block in blocks {
-                DispatchQueue.main.async {
-                    block(item, image)
-                }
-                return
-            }
-        }
-        
-        task.resume()
+    
+    func cachedImage(for url: URL) -> UIImage?{
+        self.imageCache.image(for: URLRequest(url: url))
     }
 }
