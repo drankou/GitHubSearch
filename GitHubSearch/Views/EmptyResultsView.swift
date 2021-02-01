@@ -22,7 +22,7 @@ class EmptyResultsView: UIView {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.text = "No results for: \"\(text)\""
+        label.text = text
         label.textColor = .systemGray
         addSubview(label)
         

@@ -116,7 +116,7 @@ extension SearchResultsViewController {
         .done { (users) -> Void in
             self.users = users
             if self.users.count == 0 {
-                self.showEmptyView(over: self.view, with: self.username)
+                self.showEmptyView(over: self.view, with: "No results for: \(self.username!)")
             } else {
                 snapshot.appendItems(self.users, toSection: .main)
                 self.dataSource.apply(snapshot, animatingDifferences: true)
